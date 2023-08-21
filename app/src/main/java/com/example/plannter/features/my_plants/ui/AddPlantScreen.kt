@@ -3,7 +3,7 @@ package com.example.plannter.features.my_plants.ui
 
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.TransactionTooLargeException
+
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +27,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -61,7 +63,7 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalTime
-import java.util.Calendar
+
 
 @Destination
 @Composable
@@ -245,9 +247,10 @@ viewModel.getReminders(viewModel.plant.id)
             .fillMaxHeight(0.05f)
             .padding(start = 30.dp, top = 20.dp, bottom = 30.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(colorResource(id = R.color.background_green))
+            // .background(colorResource(id = R.color.background_green))
             .shadow(1.dp)
            ,
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.background_green)),
            onClick = {
                if(viewModel.saved){
                    viewModel.showDialog=true
@@ -263,10 +266,10 @@ viewModel.getReminders(viewModel.plant.id)
             .fillMaxHeight(0.05f)
             .padding(end = 30.dp, top = 20.dp, bottom = 30.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(colorResource(id = R.color.background_green))
+            //.background(colorResource(id = R.color.background_green))
             .shadow(1.dp)
             .align(Alignment.End)
-            ,
+            ,colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.background_green)),
             onClick = {
                 viewModel.insertPlant()
                 if(viewModel.saved)
@@ -420,10 +423,10 @@ val context= LocalContext.current
         Button( modifier = Modifier
             .padding(end = 30.dp, top = 20.dp, bottom = 30.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(colorResource(id = R.color.background_green))
+            //.background(colorResource(id = R.color.background_green))
             .shadow(1.dp)
             .align(Alignment.End)
-
+,colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.background_green))
             ,
             onClick = {
                 if(viewModel.timingDesc!=""){
