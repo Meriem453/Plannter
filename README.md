@@ -2,6 +2,7 @@
 Android App that helps you to take care of your plants.
 You can plan your schedule of watering , spraying , and fertalizing ... also it offers a couple of plants informations.<br/>
 More features are coming soon! :eyes:
+</br>
 <br/>The design was inspired from: <a ref=https://www.behance.net/gallery/110550809/Plannter-UI-Design>https://www.behance.net/gallery/110550809/Plannter-UI-Design</a>
 <br/>Used Api:<a ref=https://perenual.com/docs/api>https://perenual.com/docs/api</a>
 <h3>Some pics:</h3>
