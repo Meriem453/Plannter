@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.example.plannter"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.plannter"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -96,6 +96,13 @@ dependencies {
 
     //time piicker
     implementation ("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+    //Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    //Glide
+    implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.5")
 
 
 }

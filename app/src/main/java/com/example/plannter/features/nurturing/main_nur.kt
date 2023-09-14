@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.plannter.R
@@ -50,18 +52,27 @@ fun Nur_main(navigator: DestinationsNavigator){
         Box(
             Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            contentAlignment = Alignment.Center
         ) {
-            Content4(listOf<Local_plant>(
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
-                Local_plant(ByteArray(100),"lfl,g","zejnfn","meriem houda younes","ffffffffff",5),
+            /*Content4(listOf<Local_plant>(
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","eegrrgrg","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
+                Local_plant(ByteArray(100),"lfl,g","zejnfn","","ffffffffff",5),
 
-                ))
+                ))*/
+            Text(text = "Feature not yet implemented :)",
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
+                color = Color.LightGray,
+                textAlign = TextAlign.Center,
+            )
+
+
         }
 
         BottomBar(

@@ -273,7 +273,7 @@ viewModel.getReminders(viewModel.plant.id)
             onClick = {
                 viewModel.insertPlant()
                 if(viewModel.saved)
-                Toast.makeText(context,"Plant saved",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Plant saved",Toast.LENGTH_LONG).show()
             }) {
             Text(text = "Save",
                 color = colorResource(id = R.color.title_green),

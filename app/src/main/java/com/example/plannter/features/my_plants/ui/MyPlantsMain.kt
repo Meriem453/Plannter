@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,7 +83,9 @@ import java.util.Random
                     FloatingActionButton(
                         containerColor = colorResource(id = R.color.orange)
                         , modifier = Modifier
-                            .clip(RoundedCornerShape(50.dp)),
+                            .clip(RoundedCornerShape(100.dp))
+                            .padding(bottom = 70.dp)
+                        ,
                         onClick = {
                           navigator.navigate(AddPlantScreenDestination(
                               Local_plant(null,
@@ -114,7 +117,7 @@ import java.util.Random
                         Box(Modifier.weight(1f)) {
                             Content(viewModel.filteredPlants,navigator)
                         }
-                        /*BottomBar(list = listOf(
+                        BottomBar(list = listOf(
                             BarItem(stringResource(id = R.string.catalogues),false,
                                 R.drawable.leaf
                             ),
@@ -126,7 +129,7 @@ import java.util.Random
                             )
 
                         ), 1,
-                            navigator)*/
+                            navigator)
                     }
                 }
 
@@ -244,6 +247,7 @@ fun SearchView(onValueChange:(it:String)->Unit){
                     tint = Color.LightGray
                 )
             },
+
         )
     }
 
