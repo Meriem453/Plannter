@@ -3,6 +3,7 @@ package com.example.plannter.model.repository
 import com.example.plannter.model.local.Db.PlantDatabase
 import com.example.plannter.model.local.entities.Reminder
 import com.example.plannter.model.local.entities.Local_plant
+import com.example.plannter.model.local.entities.SavedPlants
 import com.example.plannter.model.remote.PerenuelApi
 import com.example.plannter.model.remote.data.PlantDetails.PlantDetails
 import com.example.plannter.model.remote.data.PlantsList.PlantsList
@@ -15,6 +16,7 @@ class Repository(
     ) {
    private val plantsDao=db.PlantsDao()
     private val timingDao = db.timingDao()
+    private val savedPlantsDao = db.savedPlantsDao()
    suspend fun insertPlant(plant:Local_plant){
     plantsDao.insert_plant(plant)
     }
@@ -54,5 +56,24 @@ class Repository(
 
     suspend fun getApiPlantDetails(id:Int):Response<PlantDetails>{
         return api.getPlantDetails(id)
+    }
+
+    suspend fun savePlant(plant:SavedPlants){
+        savedPlantsDao.savePlant(plant)
+    }
+    suspend fun unsavePlant(plant: SavedPlants){
+        savedPlantsDao.unsavePlant(plant)
+    }
+
+    fun getAllSavedPlants():Flow<List<SavedPlants>>{
+        return savedPlantsDao.getAllSavedPlants()
+    }
+
+    fun getReminderByDay(day:String):Flow<List<Reminder>>{
+        return timingDao.getReminderByDay(day)
+    }
+
+    fun getAllReminders():Flow<List<Reminder>>{
+        return timingDao.getAllReminders()
     }
 }

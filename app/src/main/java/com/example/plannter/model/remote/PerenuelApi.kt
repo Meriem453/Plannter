@@ -9,13 +9,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PerenuelApi {
-    @GET("species-list?key=sk-cMwy6503200f917da1753")
+    @GET("species-list?key=sk-bLVC65294f8f550622448")
     suspend fun getAllPlants(
         @Query("page") page:Int,
         @Query("watering") watering:String)
     :Response<PlantsList>
 
-    @GET("species/details/{id}?key=sk-cMwy6503200f917da1753")
+    @GET("species/details/{id}?key=sk-bLVC65294f8f550622448")
     suspend fun getPlantDetails(
         @Path("id") id:Int
     ):Response<PlantDetails>

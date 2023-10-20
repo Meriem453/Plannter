@@ -2,7 +2,6 @@ package com.example.plannter.features.my_plants.viewmodels
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -20,15 +19,12 @@ import com.example.plannter.model.local.entities.Reminder
 import com.example.plannter.model.local.entities.Local_plant
 import com.example.plannter.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class AddPlantViewModel @Inject constructor(
@@ -155,8 +151,9 @@ var valid =  true
                     )
                 }
                     Toast.makeText(c,
-                      "Reminder saved ${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)} ${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH)}/${calendar.get(Calendar.YEAR)}",
+                        "Reminder saved ${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)} ${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH)}/${calendar.get(Calendar.YEAR)}",
                         Toast.LENGTH_LONG).show()
+
             }
         }
             var date = ""
@@ -167,7 +164,7 @@ var valid =  true
                 Reminder(
                     date,
                     formattedTime,
-                    plant.id,
+                    plant.plantId,
                     timingDesc,
                     calendar.timeInMillis.toInt()
                 )
@@ -195,13 +192,13 @@ var valid =  true
         val stream = ByteArrayOutputStream()
         bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
 
-        plant= Local_plant(
+        plant = Local_plant(
             stream.toByteArray(),
             name = plant.name,
             place = plant.place,
             classification = plant.classification,
             description = plant.description,
-            id = plant.id
+            plantId = plant.plantId
         )
             stream.close()
 
@@ -213,7 +210,7 @@ var valid =  true
     fun deletePlant(plant:Local_plant) {
         viewModelScope.launch {
             repo.deletePlant(plant)
-              repo.deletePlantReminders(plant.id)
+              //repo.deletePlantReminders(plant.plantId)
         }
     }
 
