@@ -15,14 +15,19 @@ interface DateAndTimeDao {
     @Delete
     suspend fun deleteTinming(timing:Reminder)
 
-    @Query("SELECT * FROM reminders WHERE plantId =:plantId")
+    @Query("SELECT * FROM reminder WHERE plantId =:plantId")
     fun getTimingOfPlant(plantId:Int):Flow<List<Reminder>>
 
-    @Query("DELETE FROM reminders WHERE plantId =:plantId")
+    @Query("DELETE FROM reminder WHERE plantId =:plantId")
     suspend fun deletePlantReminders(plantId: Int)
 
-    @Query("DELETE FROM reminders WHERE id=:id")
+    @Query("DELETE FROM reminder WHERE id=:id")
      fun deleteReminderById(id:Int)
 
+     @Query("SELECT * FROM reminder WHERE date=:date")
+     fun getReminderByDay(date:String):Flow<List<Reminder>>
+
+     @Query("SELECT * FROM REMINDER ")
+     fun getAllReminders():Flow<List<Reminder>>
 
 }

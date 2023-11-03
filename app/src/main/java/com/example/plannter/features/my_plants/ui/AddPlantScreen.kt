@@ -36,7 +36,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -158,7 +157,7 @@ val context= LocalContext.current
                 place = viewModel.plant.place,
                 classification = viewModel.plant.classification,
                 description = viewModel.plant.description,
-                id = viewModel.plant.id
+                plantId = viewModel.plant.plantId
                 )
         }
         FillText(viewModel.plant.place,"Age"){
@@ -168,7 +167,7 @@ val context= LocalContext.current
                 place = it,
                 classification = viewModel.plant.classification,
                 description = viewModel.plant.description,
-                id = viewModel.plant.id
+                plantId = viewModel.plant.plantId
             )
 
         }
@@ -180,7 +179,7 @@ val context= LocalContext.current
                 place = viewModel.plant.place,
                 classification = it,
                 description = viewModel.plant.description,
-                id = viewModel.plant.id
+                plantId = viewModel.plant.plantId
             )
 
         }
@@ -191,13 +190,13 @@ val context= LocalContext.current
                 place = viewModel.plant.place,
                 classification = viewModel.plant.classification,
                 description = it,
-                id = viewModel.plant.id
+                plantId = viewModel.plant.plantId
             )
 
         }
 
         Text(text = "Reminders",color = colorResource(id = R.color.title_green), fontWeight = FontWeight.Bold, fontFamily = FontFamily(Font(R.font.josefinsans_regular)), fontSize = 18.sp, modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 10.dp))
-viewModel.getReminders(viewModel.plant.id)
+viewModel.getReminders(viewModel.plant.plantId)
         if(viewModel.reminders.isEmpty()) {
             Text(
                 text = "There are no reminders",

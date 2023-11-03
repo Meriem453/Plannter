@@ -12,11 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,6 +36,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,16 +60,16 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun catalogue_main(navigator: DestinationsNavigator){
+fun catalogue_main(search:String,navigator: DestinationsNavigator){
     val viewModel = hiltViewModel<RemotePlantsViewModel>()
-    viewModel.getAllPlants()
+
 
     Column(
         Modifier
             .fillMaxSize()
             .background(Color.White)) {
         TopBar("Catalogue")
-        SearchView{
+        SearchView(search){
                 viewModel.updateSearch(it)
         }
         categories(viewModel)
@@ -84,7 +89,7 @@ fun catalogue_main(navigator: DestinationsNavigator){
                 R.drawable.eco_saving
             )
 
-        ),0,navigator)
+        ),0,navigator,"")
 
     }
 
@@ -149,6 +154,7 @@ fun categories(viewModel: RemotePlantsViewModel) {
 @Composable
 fun MyGridView(list: ArrayList<Data?>,viewModel: RemotePlantsViewModel,navigator: DestinationsNavigator) {
     list.add(null)
+    val c =LocalContext.current
     LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Fixed(2), modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp)) {
         items(list.size, span = {index ->
              if (index == list.size-1)
@@ -219,8 +225,8 @@ Canvas(modifier = Modifier
                     var fav:Boolean by remember {
                         mutableStateOf(false)
                     }
-                   /* Icon(
-                        imageVector = if (fav)Icons.Default.Favorite
+                    Icon(
+                        imageVector = if (fav) Icons.Default.Favorite
                         else Icons.Default.FavoriteBorder,
                         contentDescription = "",
                         modifier = Modifier
@@ -231,12 +237,13 @@ Canvas(modifier = Modifier
                                 fav = !fav
                                 list[it]!!.fav = fav
 
+                          viewModel.savePlant(list[it]!!,c )
                             }
 
                         ,
                         tint = if (list[it]!!.fav) colorResource(id = R.color.background_green) else Color.White
 
-                    )*/
+                    )
                 }
             }}else{
                    viewModel.getAllPlants()

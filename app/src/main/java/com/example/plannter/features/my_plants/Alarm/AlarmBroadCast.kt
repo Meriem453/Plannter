@@ -1,6 +1,7 @@
 package com.example.plannter.features.my_plants.Alarm
 
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -30,7 +31,7 @@ val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as Notific
         val notification = NotificationCompat.Builder(context, "channel")
             .setSmallIcon(R.drawable.logo)
             .setContentTitle("Yooho! don't forget your plant")
-            .setContentText(message)
+            .setContentText(message).setPriority(Notification.PRIORITY_MAX)
             .build()
 
 manager.notify(1,notification)

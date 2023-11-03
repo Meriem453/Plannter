@@ -19,6 +19,6 @@ interface plants_dao {
     @Query("SELECT * FROM local_plants")
     fun getAllPlants():Flow<List<Local_plant>>
 
-    @Query("SELECT * FROM local_plants WHERE id =:id")
+    @Query("SELECT * FROM local_plants WHERE plantId =:id")
     fun getPlantById(id:Int):Flow<Local_plant>
 }

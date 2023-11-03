@@ -1,9 +1,10 @@
 package com.example.plannter.features.my_plants.ui
 
 
-import android.graphics.Bitmap
+
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,9 +15,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,9 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -57,65 +56,42 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.plannter.R
 import com.example.plannter.features.destinations.AddPlantScreenDestination
 import com.example.plannter.features.destinations.MyPlantsMainDestination
-import com.example.plannter.features.destinations.Nur_mainDestination
+
 import com.example.plannter.features.destinations.catalogue_mainDestination
+import com.example.plannter.features.destinations.mainTaskDestination
 import com.example.plannter.features.destinations.show_detailsDestination
 import com.example.plannter.features.my_plants.viewmodels.MyPlantsViewModel
 import com.example.plannter.features.my_plants.data.BarItem
 import com.example.plannter.model.local.entities.Local_plant
+import com.example.plannter.model.local.entities.SavedPlants
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.io.ByteArrayOutputStream
-import java.util.Random
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 
             @Destination
             @Composable
              fun MyPlantsMain(navigator: DestinationsNavigator){
                 val viewModel = hiltViewModel<MyPlantsViewModel>()
                 viewModel.getAllPlants()
+                viewModel.getAllSavedPlants()
 
-                Scaffold(
-                    Modifier.fillMaxSize(),
-                    floatingActionButton = {
-                    FloatingActionButton(
-                        containerColor = colorResource(id = R.color.orange)
-                        , modifier = Modifier
-                            .clip(RoundedCornerShape(100.dp))
-                            .padding(bottom = 70.dp)
-                        ,
-                        onClick = {
-                          navigator.navigate(AddPlantScreenDestination(
-                              Local_plant(null,
-                                  "",
-                                  "",
-                                  "",
-                                  "",
-                                  kotlin.random.Random.nextInt(100000))
-                          ))
-                        }){
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "add",
-                            tint = colorResource(id = R.color.light_orange),
-                            modifier = Modifier.background(
-                            colorResource(id = R.color.orange)))
-                    }
-                }) {values ->
-                    val a = values
                     Column( modifier = Modifier
                         .fillMaxSize()
                         .background(Color.White),
                         verticalArrangement = Arrangement.Top) {
                         TopBar("My plants")
-                        SearchView{
+                        SearchView(""){
                             viewModel.search=it
                             viewModel.updateSearch()
                         }
-                        Box(Modifier.weight(1f)) {
-                            Content(viewModel.filteredPlants,navigator)
+                        Column(
+                            Modifier
+                                .weight(1f)
+                                .padding(start = 15.dp, end = 15.dp)) {
+                            Content(viewModel.filteredPlants,navigator,"My plants",0.5f)
+                            Content(list = viewModel.filteredSavedPlants, navigator =navigator , title = "Saved plants",1f)
                         }
                         BottomBar(list = listOf(
                             BarItem(stringResource(id = R.string.catalogues),false,
@@ -129,9 +105,9 @@ import java.util.Random
                             )
 
                         ), 1,
-                            navigator)
+                            navigator,"")
                     }
-                }
+
 
 
 }
@@ -169,7 +145,7 @@ fun TopBar(title:String){
     }
 }
 @Composable
-fun BottomBar(list:List<BarItem>,screen:Int,navigator: DestinationsNavigator){
+fun BottomBar(list:List<BarItem>,screen:Int,navigator: DestinationsNavigator,search:String){
 
     Row (
         Modifier
@@ -186,9 +162,9 @@ fun BottomBar(list:List<BarItem>,screen:Int,navigator: DestinationsNavigator){
            ) {
 
                when(index){
-                   0->{navigator.navigate(catalogue_mainDestination)}
+                   0->{navigator.navigate(catalogue_mainDestination(""))}
                    1->{navigator.navigate(MyPlantsMainDestination)}
-                   2->{navigator.navigate(Nur_mainDestination)}
+                   2->{navigator.navigate(mainTaskDestination)}
                }
            }
        }
@@ -217,9 +193,9 @@ fun BarItem(icon:Int,label:String,color: Color,onSelected:() -> Unit){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchView(onValueChange:(it:String)->Unit){
+fun SearchView(init:String,onValueChange:(it:String)->Unit){
     var search by remember {
-        mutableStateOf("")
+        mutableStateOf(init)
     }
     Card (
         Modifier
@@ -254,64 +230,164 @@ fun SearchView(onValueChange:(it:String)->Unit){
 
 }
 @Composable
-fun Content(list: List<Local_plant>,navigator: DestinationsNavigator){
-if(list.isEmpty()){
-    Column(
-        Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+fun Content(list: List<Any?>, navigator: DestinationsNavigator, title:String,fill:Float){
+    Column(Modifier.fillMaxHeight(fill)){
+        Text(text = title,
+            fontFamily =  FontFamily(Font(R.font.josefinsans_regular)),
+            fontSize = 18.sp,
+            color = colorResource(id = R.color.title_green),
+            modifier = Modifier.padding(top = 15.dp)
 
+        )
+
+if(list.isEmpty()){
 
     Text(text = "There is no plant matches your search :(",
         fontSize = 14.sp,
         fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
         color = Color.LightGray,
-        textAlign = TextAlign.Center
-        )}
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(top = 15.dp)
+        )
 }else{
-LazyColumn(content ={
+
+LazyRow(modifier = Modifier.fillMaxHeight(), content ={
 items(list.size){
-    Card (
-        border= BorderStroke(1.dp, Color.LightGray),
-        modifier= Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(5.dp))
-            .height(100.dp)
-            .padding(7.dp)
+    if(list[it]!=null){
+
+        Card(modifier = Modifier
+            .fillMaxHeight()
+            .width(200.dp)
+            .padding(end = 7.dp, top = 15.dp)
             .clickable {
-                navigator.navigate(show_detailsDestination(list[it]))
+                if (list[it] is Local_plant) {
+                    navigator.navigate(show_detailsDestination(list[it] as Local_plant))
+                } else {
+                    navigator.navigate(catalogue_mainDestination((list[it] as SavedPlants).name))
+                }
             }
+            , border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp)) {
+            Box (Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopEnd
+            ){
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.White)) {
+
+                    Image(bitmap = BitmapFactory.decodeByteArray(
+                       if(list[it] is Local_plant) (list[it] as Local_plant).image else (list[it] as SavedPlants).image ,
+                        0,
+                        if(list[it] is Local_plant) (list[it] as Local_plant).image!!.size else (list[it] as SavedPlants).image.size).asImageBitmap()
+                        , contentDescription =""
+                        , modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.6f),  contentScale = ContentScale.Crop )
+                    Canvas(modifier = Modifier
+                        .fillMaxWidth()
+                        , onDraw = {
+                            drawLine(
+                                start = Offset(x = 0f, y = size.height/2),
+                                end = Offset(x = size.width, y = size.height/2),
+                                strokeWidth = 1f,
+                                color = Color.Gray
+                            )
+                        })
+                    Text(
+                        text = if(list[it] is Local_plant) (list[it] as Local_plant).name else (list[it] as SavedPlants).name,
+                        fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
+                        fontSize = 16.sp,
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .padding(
+                                start = 10.dp,
+                                top = 5.dp,
+                            )
 
 
-    ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
+                    )
+                    Text(
+                        text = if(list[it] is Local_plant) (list[it] as Local_plant).classification else (list[it] as SavedPlants).desc,
+                        fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
+                        fontSize = 14.sp,
+                        color = Color.Gray,
 
-        ) {
-            Image(bitmap = BitmapFactory.decodeByteArray(list[it].image,0,list[it].image!!.size).asImageBitmap(),
-                contentDescription ="" ,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.padding(end = 15.dp).fillMaxWidth(0.3f))
-            Column (Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceEvenly){
-                Text(text = list[it].name,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
-                    color = colorResource(id = R.color.selected_item_color))
-                Text(text = list[it].classification,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.josefinsans_light))
+                        modifier = Modifier
+                            .padding(
+                                start = 10.dp,
+                                bottom = 10.dp
+                            )
+
+
+                    )
+
+                }
+                var fav:Boolean by remember {
+                    mutableStateOf(false)
+                }
+                /* Icon(
+                     imageVector = if (fav)Icons.Default.Favorite
+                     else Icons.Default.FavoriteBorder,
+                     contentDescription = "",
+                     modifier = Modifier
+                         .padding(10.dp)
+                         .height(35.dp)
+                         .width(35.dp)
+                         .clickable {
+                             fav = !fav
+                             list[it]!!.fav = fav
+
+                         }
+
+                     ,
+                     tint = if (list[it]!!.fav) colorResource(id = R.color.background_green) else Color.White
+
+                 )*/
+            }
+        }}else{
+        Card(modifier = Modifier
+            .width(200.dp)
+            .padding(end = 7.dp, top = 15.dp)
+            .clickable {
+                navigator.navigate(
+                    AddPlantScreenDestination(
+                        Local_plant(
+                            null,
+                            "",
+                            "",
+                            "",
+                            "",
+                            kotlin.random.Random.nextInt(100000)
+                        )
+                    )
                 )
             }
+            , shape = RoundedCornerShape(20.dp)){
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.orange)), horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(imageVector = Icons.Default.Add, contentDescription ="",Modifier.fillMaxSize(0.6f), tint = colorResource(
+                    id = R.color.light_orange
+                ) )
+                Text(
+                    text = "Add plant",
+                    fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.light_orange),
+                    modifier = Modifier
+                        .padding(
+                            start = 10.dp,
+                            top = 5.dp,
+                        ))
+            }
         }
-    }
+        }
+
 
 }
-} )}
+} )
+}}
 }
 
 @Preview(showBackground = true)

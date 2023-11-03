@@ -34,10 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -290,7 +288,7 @@ fun CardContent(plant:Local_plant,viewModel: AddPlantViewModel) {
 
 
         Text(text = "Reminders",color = colorResource(id = R.color.title_green), fontFamily = FontFamily(Font(R.font.josefinsans_regular)), fontSize = 18.sp, modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 10.dp))
-        viewModel.getReminders(plant.id)
+        viewModel.getReminders(plant.plantId)
         if(viewModel.reminders.isEmpty()){
             Text(text = "There are no reminders", color = Color.LightGray, fontFamily = FontFamily(Font(R.font.josefinsans_regular)), fontSize = 14.sp, modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 10.dp))
 
