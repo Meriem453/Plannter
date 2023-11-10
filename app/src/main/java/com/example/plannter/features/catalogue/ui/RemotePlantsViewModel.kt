@@ -3,26 +3,23 @@ package com.example.plannter.features.catalogue.ui
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.TransactionTooLargeException
-import android.provider.MediaStore
-import android.widget.Toast
+import android.graphics.drawable.BitmapDrawable
+
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.Coil
+import coil.request.ImageRequest
 import com.example.plannter.model.local.entities.Local_plant
 import com.example.plannter.model.local.entities.SavedPlants
 import com.example.plannter.model.remote.data.PlantDetails.PlantDetails
 import com.example.plannter.model.remote.data.PlantsList.Data
 import com.example.plannter.model.remote.data.PlantsList.PlantsList
 import com.example.plannter.model.repository.Repository
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -47,7 +44,7 @@ class RemotePlantsViewModel @Inject constructor(
     var error by mutableStateOf("")
     var plantDetails:PlantDetails? by mutableStateOf(null)
 
-
+    var loading by mutableStateOf(false)
 
 
 
@@ -96,33 +93,25 @@ class RemotePlantsViewModel @Inject constructor(
     }
 fun savePlant(plant: Data,c:Context){
 
-        Picasso.get().load(plant.default_image.original_url).into(object : Target{
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+    loading=true
 
-                viewModelScope.launch {
-                    val stream = ByteArrayOutputStream()
-                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                    repo.savePlant(SavedPlants(
-                        plant.common_name,
-                        plant.cycle,
-                        stream.toByteArray(),
-                        plant.id
-                    ))
-                    stream.close()
+    val request = ImageRequest.Builder(c)
+        .data(plant.default_image.original_url)
+        .target {
 
-                }
-                Toast.makeText(c,"Plant saved!",Toast.LENGTH_SHORT).show()
-            }
+            val bitmap = (it as BitmapDrawable).bitmap
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
 
-            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
-                Toast.makeText(c,"Failed to save, check your connection!",Toast.LENGTH_SHORT).show()
-            }
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                Toast.makeText(c,"Saving",Toast.LENGTH_SHORT).show()
-            }
 
-        })
+            val saved = SavedPlants(plant.common_name, plant.cycle, byteArray, plant.id)
+            viewModelScope.launch {   repo.savePlant(saved) }
+            loading=false
+            byteArrayOutputStream.close()
 
+        }.build()
+    Coil.imageLoader(c).enqueue(request)
 
 
 }

@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -194,6 +195,8 @@ fun BarItem(icon:Int,label:String,color: Color,onSelected:() -> Unit){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchView(init:String,onValueChange:(it:String)->Unit){
+
+
     var search by remember {
         mutableStateOf(init)
     }
@@ -201,8 +204,7 @@ fun SearchView(init:String,onValueChange:(it:String)->Unit){
         Modifier
             .background(Color.Transparent)
             .fillMaxHeight(0.12f)
-            .padding(15.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .padding(start=15.dp, end = 15.dp, top = 15.dp, bottom = 5.dp)
             .background(Color.White)
         , border = BorderStroke(1.dp, Color.LightGray)
     ){
@@ -213,9 +215,16 @@ fun SearchView(init:String,onValueChange:(it:String)->Unit){
                 onValueChange(it)
 
             },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = colorResource(id = R.color.title_green),
+                unfocusedIndicatorColor = Color.LightGray
+            ),
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White),
+
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -223,6 +232,7 @@ fun SearchView(init:String,onValueChange:(it:String)->Unit){
                     tint = Color.LightGray
                 )
             },
+
 
         )
     }
@@ -362,19 +372,18 @@ items(list.size){
                     )
                 )
             }
-            , shape = RoundedCornerShape(20.dp)){
+            , shape = RoundedCornerShape(20.dp),
+            border = BorderStroke(1.dp, Color.LightGray)){
             Column(
                 Modifier
                     .fillMaxSize()
-                    .background(colorResource(id = R.color.orange)), horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(imageVector = Icons.Default.Add, contentDescription ="",Modifier.fillMaxSize(0.6f), tint = colorResource(
-                    id = R.color.light_orange
-                ) )
+                    .background(Color.White), horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(imageVector = Icons.Default.Add, contentDescription ="",Modifier.fillMaxSize(0.6f), tint = Color.LightGray)
                 Text(
                     text = "Add plant",
                     fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
                     fontSize = 16.sp,
-                    color = colorResource(id = R.color.light_orange),
+                    color = Color.Gray,
                     modifier = Modifier
                         .padding(
                             start = 10.dp,

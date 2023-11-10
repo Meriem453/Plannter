@@ -65,7 +65,7 @@ fun show_details(plant:Local_plant,navigator: DestinationsNavigator){
            mutableStateOf(false)
    }
 
-    Column(Modifier.fillMaxSize(),
+    Column(Modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween) {
         TopBar("Plant details")
         Image(
@@ -76,11 +76,8 @@ fun show_details(plant:Local_plant,navigator: DestinationsNavigator){
             Modifier
                 .fillMaxHeight(0.4f)
                 .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(200.dp)
-                )
                 .shadow(2.dp)
-                .padding(30.dp)
+
         )
         Row(horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()) {

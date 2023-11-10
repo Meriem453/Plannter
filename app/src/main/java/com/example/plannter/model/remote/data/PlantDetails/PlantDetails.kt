@@ -1,5 +1,7 @@
 package com.example.plannter.model.remote.data.PlantDetails
 
+import android.os.Parcelable
+@kotlinx.parcelize.Parcelize
 data class PlantDetails(
  
     val care_level: String,
@@ -9,7 +11,6 @@ data class PlantDetails(
     val cycle: String,
     val description: String,
     val dimension: String,
-    val dimensions: Dimensions,
     val drought_tolerant: Boolean,
     val edible_fruit: Boolean,
     val edible_fruit_taste_profile: String,
@@ -41,4 +42,4 @@ data class PlantDetails(
     val type: String,
     val watering: String,
    
-)
+):Parcelable

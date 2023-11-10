@@ -103,8 +103,11 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     //Glide
     implementation ("com.github.bumptech.glide:compose:1.0.0-alpha.5")
-//Picasso
-    implementation ("com.squareup.picasso:picasso:2.8")
+
+    //Coil
+    implementation ("io.coil-kt:coil:1.4.0")
+
+
 
 }
 // Allow references to generated code

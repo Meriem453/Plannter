@@ -49,7 +49,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.plannter.R
-import com.example.plannter.features.destinations.cat_plant_detailsDestination
+import com.example.plannter.features.destinations.Cat_plant_detailsDestination
+
+
 import com.example.plannter.features.my_plants.data.BarItem
 import com.example.plannter.features.my_plants.ui.BottomBar
 import com.example.plannter.features.my_plants.ui.SearchView
@@ -72,6 +74,13 @@ fun catalogue_main(search:String,navigator: DestinationsNavigator){
         SearchView(search){
                 viewModel.updateSearch(it)
         }
+        Text(text = "The watering amount of the species:",
+            fontFamily =  FontFamily(Font(R.font.josefinsans_regular)),
+            fontSize = 14.sp,
+            color = colorResource(id = R.color.title_green),
+            modifier = Modifier.padding( start = 30.dp, end = 30.dp, bottom = 5.dp)
+
+        )
         categories(viewModel)
         Column (modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally){
             MyGridView(ArrayList(viewModel.filteredPlants),viewModel,navigator)
@@ -118,7 +127,7 @@ fun categories(viewModel: RemotePlantsViewModel) {
                 ){
                     Icon(painter = painterResource(id =list[it].icon), contentDescription ="" , tint = if(viewModel.watering==it) colorResource(
                         id = R.color.title_green
-                    )else Color.Gray, modifier = Modifier.fillMaxHeight(0.6f))
+                    )else Color.Gray, modifier = Modifier.fillMaxHeight(0.5f))
                     Text(
                         text = list[it].label,
                         fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
@@ -137,7 +146,7 @@ fun categories(viewModel: RemotePlantsViewModel) {
         }
         Canvas(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp)
+            .padding(top = 10.dp, start = 30.dp, end = 30.dp)
             , onDraw = {
             drawLine(
                 start = Offset(x = 0f, y = size.height/2),
@@ -169,7 +178,14 @@ fun MyGridView(list: ArrayList<Data?>,viewModel: RemotePlantsViewModel,navigator
                 .padding(7.dp)
                 .clickable {
                     viewModel.getPlantDetails(list[it]!!.id)
-                       navigator.navigate(cat_plant_detailsDestination())
+                    if (viewModel.plantDetails != null) {
+                        navigator.navigate(
+                            Cat_plant_detailsDestination(
+                                viewModel.plantDetails!!,
+                                list[it]!!.default_image.original_url
+                            )
+                        )
+                    }
                 }
                 , border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp)) {
                 Box (Modifier.fillMaxSize(),
@@ -198,6 +214,7 @@ Canvas(modifier = Modifier
         fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
         fontSize = 16.sp,
         color = Color.Gray,
+        maxLines = 1,
         modifier = Modifier
             .padding(
                 start = 10.dp,
@@ -211,6 +228,7 @@ Canvas(modifier = Modifier
         fontFamily = FontFamily(Font(R.font.josefinsans_regular)),
         fontSize = 14.sp,
         color = Color.Gray,
+        maxLines = 1,
 
         modifier = Modifier
             .padding(
@@ -237,7 +255,7 @@ Canvas(modifier = Modifier
                                 fav = !fav
                                 list[it]!!.fav = fav
 
-                          viewModel.savePlant(list[it]!!,c )
+                                viewModel.savePlant(list[it]!!, c)
                             }
 
                         ,
@@ -248,9 +266,11 @@ Canvas(modifier = Modifier
             }}else{
                    viewModel.getAllPlants()
                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                   CircularProgressIndicator(color = colorResource(id = R.color.title_green), modifier = Modifier.padding(10.dp).alpha(
-                       if(viewModel.status=="loading") 1f else 0f
-                   ))
+                   CircularProgressIndicator(color = colorResource(id = R.color.title_green), modifier = Modifier
+                       .padding(10.dp)
+                       .alpha(
+                           if (viewModel.status == "loading") 1f else 0f
+                       ))
 
                    Text(text = viewModel.error,
                        fontSize = 14.sp,

@@ -55,7 +55,7 @@ fun mainTask(navigator: DestinationsNavigator){
 
     val viewModel = hiltViewModel<TaskViewModel>()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(Color.White)) {
         TopBar("Today's tasks")
         Box(
             Modifier

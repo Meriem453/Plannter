@@ -34,7 +34,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +63,7 @@ import com.example.plannter.features.my_plants.viewmodels.AddPlantViewModel
 import com.example.plannter.model.local.entities.Local_plant
 import com.ramcosta.composedestinations.annotation.Destination
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalTime
@@ -81,7 +86,7 @@ fun AddPlantScreen(plant:Local_plant){
 
     }
     Column(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween) {
         TopBar("Add plant")
         if(viewModel.plant.image!=null){
@@ -90,11 +95,8 @@ fun AddPlantScreen(plant:Local_plant){
                 Modifier
                     .fillMaxHeight(0.4f)
                     .fillMaxWidth()
-                    .clip(
-                        RoundedCornerShape(200.dp)
-                    )
-                    .shadow(2.dp)
-                    .padding(30.dp),
+                    .shadow(2.dp),
+
                 contentScale = ContentScale.Crop
             )
         }else{
@@ -312,6 +314,11 @@ fun FillText(info:String,title:String,onValueChange : (value:String) -> Unit) {
                 start = 30.dp,
                 end = 30.dp
             ),
+colors = TextFieldDefaults.textFieldColors(
+    focusedIndicatorColor = colorResource(id = R.color.title_green),
+    containerColor = Color.White,
+    unfocusedIndicatorColor = Color.Gray
+)
 
     )
 }
@@ -395,6 +402,12 @@ val context= LocalContext.current
 
             Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                 RadioButton(selected =!viewModel.checkedRepeat ,
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = colorResource(id = R.color.orange),
+                        unselectedColor = Color.Gray
+                    ),
+
+
                     onClick = { viewModel.checkedRepeat=false })
                 Text(text = "Once",
                     fontFamily = FontFamily(Font(R.font.josefinsans_light)),
@@ -405,7 +418,12 @@ val context= LocalContext.current
                 )
 
                 RadioButton(selected =viewModel.checkedRepeat ,
-                    onClick = { viewModel.checkedRepeat=true })
+                    onClick = { viewModel.checkedRepeat=true }
+                , colors = RadioButtonDefaults.colors(
+                        selectedColor = colorResource(id = R.color.orange),
+                        unselectedColor = Color.Gray
+                    )
+                )
 
                 Text(text = "Repeat",
                     fontFamily = FontFamily(Font(R.font.josefinsans_light)),
@@ -418,7 +436,9 @@ val context= LocalContext.current
 
         FillText(info = viewModel.timingDesc, title = "Description" , onValueChange = {
             viewModel.timingDesc=it
-        })
+        }
+
+        )
         Button( modifier = Modifier
             .padding(end = 30.dp, top = 20.dp, bottom = 30.dp)
             .clip(RoundedCornerShape(20.dp))
@@ -447,11 +467,20 @@ val context= LocalContext.current
 
     MaterialDialog(
         dialogState = dialogState,
-        buttons = {positiveButton(text = "Save") }
+        buttons = {positiveButton(text = "Save", textStyle = TextStyle(color = colorResource(id = R.color.title_green)))
+        }
     ) {
         timepicker(
             initialTime = LocalTime.now(),
-            title = "Pick a time"
+            title = "Pick a time",
+            colors = TimePickerDefaults.colors(
+                activeBackgroundColor = colorResource(id = R.color.orange),
+                selectorColor = colorResource(id = R.color.orange),
+                inactiveBackgroundColor = Color.LightGray,
+                selectorTextColor = colorResource(id = R.color.title_green),
+                headerTextColor = colorResource(id = R.color.title_green)
+
+            )
         ){
           viewModel.pickedTime = it
         }
